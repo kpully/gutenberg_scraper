@@ -9,7 +9,7 @@ import sys
 BASE_URL = "https://www.gutenberg.org/"
 TOP_100 = BASE_URL + "browse/scores/top"
 
-DEFAULT_DATA_DIR = os.pardir + "/data/"
+DEFAULT_DATA_DIR = os.pardir
 
 class Gutenberg_Scraper():
     def __init__(self,**kwargs):
@@ -218,7 +218,7 @@ def main(argv):
 
     parser.add_argument('--data-directory', '--data_directory', '-d', default=argparse.SUPPRESS, help='directory where books will be downloaded')
     parser.add_argument('--check-prev-downloads', '--check_prev_downloads', '-c', default=argparse.SUPPRESS, help='check whether book alaready exists in data directory')
-    parser.add_argument('--action', '--action', '-a', default=argparse.SUPPRESS, help='to download top 100 books, pass top; to download book by id, pass id of book')
+    parser.add_argument('--action', '--action', '-a', default=argparse.SUPPRESS, help='to download top 100 books, pass top; to download book by id, pass id of book', required=True)
 
     args = parser.parse_args(argv)
 
