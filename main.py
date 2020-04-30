@@ -49,7 +49,7 @@ class Gutenberg_Scraper():
         
     def get_top_100_books(self,limit=100):
         r = self.session.get(TOP_100)
-        soup = BeautifulSoup(r.content)
+        soup = BeautifulSoup(r.content, features="lxml")
         books = soup.findAll("li")
         
         top_100_book_links = {} #dictionary to hold booktitle:link_to_download_book
@@ -62,21 +62,22 @@ class Gutenberg_Scraper():
                 if (not self.downloaded(booktitle)):
                     if "ebooks" in str(book.find("a")["href"]):
                         top_100_book_links[booktitle]=link
-                        
-                    for book in top_100_book_links.items():
-                        booktitle=book[0]
-                        book_download_link=book[1]
-                        url = BASE_URL + book_download_link[1:]
-                        data_link=self.get_data_links(url)
-                        self.download_book(booktitle, data_link)
-                        
                 else:
                     print("<--- SKIPPING %s; this title is already downloaded --->" % (booktitle))
+                        
+        for book in top_100_book_links.items():
+            booktitle=book[0]
+            book_download_link=book[1]
+            url = BASE_URL + book_download_link[1:]
+            data_link=self.get_data_links(url)
+            self.download_book(booktitle, data_link)
+                    
+
 
 
     def get_data_links(self,url):
         r = self.session.get(url)
-        soup = BeautifulSoup(r.content)
+        soup = BeautifulSoup(r.content, features="lxml")
         data_links = soup.findAll("a", {"class": "link"})
         data_link = BASE_URL + self.get_text_or_html_link(data_links)
         return data_link
