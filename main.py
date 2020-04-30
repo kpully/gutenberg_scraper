@@ -74,7 +74,6 @@ class Gutenberg_Scraper():
                     
 
 
-
     def get_data_links(self,url):
         r = self.session.get(url)
         soup = BeautifulSoup(r.content, features="lxml")
@@ -97,7 +96,7 @@ class Gutenberg_Scraper():
         threshold=300
         url = BASE_URL + "ebooks/"+bookid
         r=self.session.get(url)
-        soup = BeautifulSoup(r.content)
+        soup = BeautifulSoup(r.content,features="lxml")
         booktitle=soup.find("title").text
         
         if (self.check_prev_downloads):
@@ -219,11 +218,18 @@ def main(argv):
 
     parser.add_argument('--data-directory', '--data_directory', '-d', default=argparse.SUPPRESS, help='directory where books will be downloaded')
     parser.add_argument('--check-prev-downloads', '--check_prev_downloads', '-c', default=argparse.SUPPRESS, help='check whether book alaready exists in data directory')
-    
+    parser.add_argument('--action', '--action', '-a', default=argparse.SUPPRESS, help='to download top 100 books, pass top; to download book by id, pass id of book')
+
     args = parser.parse_args(argv)
 
     scraper = Gutenberg_Scraper(**vars(args))
-    scraper.get_top_100_books()
+    if (scraper.action=="top"):
+        scraper.get_top_100_books()
+    else:
+        try:
+            scraper.get_book_by_id(scraper.action)
+        except Error as e:
+            print(e)
 
 
 if __name__=="__main__":
